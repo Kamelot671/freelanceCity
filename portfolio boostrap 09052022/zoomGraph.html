@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover"/>
+        <meta name="description" content="A mind map editor, showing how subtrees can be moved, copied, deleted, and laid out."/>
+        <!-- Copyright 1998-2022 by Northwoods Software Corporation. -->
+        <title>Mind Map</title>
+        <style>
+            #container  {
+                width : 1200px;
+                height : 800px;
+            }
+
+            #container1 {
+                height: 400px;
+                min-width: 320px;
+                max-width: 600px;
+                margin: 0 auto;
+            }
+
+            hr {
+                border : "5px outline teal"
+            }
+
+        
+        </style>
+    </head>
+
+    <body>
+   
+        <hr>
+        <div id="container">
+        
+        </div>
+
+        <hr>
+       
+
+        <div id="report"></div>
+    
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/highcharts-more.js"></script>
+        <script src="https://code.highcharts.com/modules/drilldown.js"></script>
+
+        
+        
+        <script id="code">
+            function init() {
+                Highcharts.chart("container", {
+                    chart : {
+                        type : "column"
+                    },
+                    title: {
+                        text: 'Profits réalisés en 2021 en millions d\'euros par la ville de Paris avec un tourisme spécifique'
+                    },
+                    subtitle : {
+                        text : "Penchons nous sur les touristes asiatiques, européens et africains"
+                    },
+                    xAxis : {
+                        type : "category"
+                    },
+                    legend : {
+                        enabled : false
+                    },
+                    plotOptions : {
+                        series : {
+                            borderWidth : 0,
+                            dataLabels : {
+                                enabled : true
+                            }
+                        }
+                    },
+                    series : [
+                        {
+                            name : "Touristes Vuu globale",
+                            colorByPoint : true,
+                            data : [
+                                {
+                                    name : "Asiatique",
+                                    y : 60,
+                                    drilldown : "asiatic"
+                                },
+                                {
+                                    name : "Europeen",
+                                    y : 35,
+                                    drilldown : "europeen"
+                                },
+                                {
+                                    name : "Africain",
+                                    y : 15,
+                                    drilldown : "africain"
+                                }
+                            ]
+                        }
+                    ],
+                    drilldown : {
+                        series : [
+                            {
+                                id : 'asiatic',
+                                data : [
+                                    ['chinois', 25],
+                                    ['japonais', 15],
+                                    ['autres', 20],
+                                ]
+                            },
+                            {
+                                id : "europeen",
+                                data : [
+                                    ['anglais', 15],
+                                    ['hollandais', 12],
+                                    ['allemands', 5],
+                                    ['autres', 3]
+                                ]
+                            },
+                            {
+                                id: 'africain',
+                                data: [
+                                    ['turques', 4],
+                                    ['marocains', 3],
+                                    ['algériens', 2],
+                                    ['autres', 6],
+                                ]
+                            }
+                        ]
+                    }
+                })
+            }
+
+            init();
+        </script>
+    </body>
+</html>

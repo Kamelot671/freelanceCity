@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset : utf-8>
+    <title>A la découverte des monuments</title>
+    <style>
+        body {
+            background: rgb(93, 136, 165, 0.2);
+        }
+        
+        h1 {
+            color: rgb(50, 179, 179);
+            text-shadow: 2px 3px 5px black;
+        }
+        
+        
+        
+        .buttonOne {
+            color: whitesmoke;
+            border-radius: 50px;
+            width: 200px;
+            height: 35px;
+            background-color:rgb(64, 191, 184);
+            border: solid 3px ;
+            font-weight: bold;
+            text-shadow: 3px 3px 2px rgb(15, 15, 15);
+            font-size: 22px;
+            margin-bottom: 1px;
+            box-shadow: 5px 3px 5px black;
+            padding: 2px;
+            margin : 5px;
+        }
+        
+        p {
+            display: inline;
+            font-weight: bolder;
+            font-size: 24px;
+            color: rgb(232, 197, 23);
+            text-shadow: 2px 2px 5px rgb(3, 15, 3);
+        }
+        
+        .blockLevel {
+            border: 5px solid rgb(0, 76, 255);
+            padding: 2px;
+            background-color: rgb(99, 167, 196);
+            width : 1210px;
+            box-shadow : 3px 5px 2px black;
+        }
+        img {
+            border: 3px solid rgb(51, 118, 173);
+            box-shadow: 3px 5px 2px black;
+            width: 400px;
+            height: 160px;
+            margin-right: 5px;
+        }
+        
+        hr {
+            height: 10px;
+            border: 2px solid black;
+            background: linear-gradient(rgb(66, 167, 167), rgb(41, 115, 145), rgb(61, 129, 145), rgb(75, 131, 139));
+            box-shadow: 10px 5px black;
+            width: 1200px;
+            margin:12px;
+        }
+ 
+      
+        #blockOne {
+             background-image:url("");
+             height: 160px;
+             display : flex;
+             
+        }
+
+        .para {
+            color :rgb(5, 96, 92);
+            text-shadow : 2px 2px 2px rgb(243, 245, 243);
+        }
+    </style>
+</head>
+<body>
+    <h1>A la découverte des monuments</h1>
+    <div id="blockOne">
+         <h2 id="nameOne"></h2>
+         <img id="landscapeOne" src="https://a.cdn-hotels.com/gdcs/production119/d115/5f81e28b-59e9-480e-bff0-4ba311169988.jpg">
+         <img id="persoOne" src="https://a.cdn-hotels.com/gdcs/production170/d112/0cc3c66b-63f3-421e-aeba-81264487cd2c.jpg">
+         <img id="dragonTwo"  src="https://a.cdn-hotels.com/gdcs/production110/d1685/73c1d8a2-ecfb-4ba6-9970-c7f5cd85fba0.jpg?">
+         <button id="event" class="buttonOne" onclick=random()>commencer le jeu</button>
+         <button id="event1" class="buttonOne" onclick=restart()>rejouer</button>
+    </div>
+    <br>
+    <hr>
+    <br>
+    
+    <div  class="blockLevel">
+        <p>Power : </p>
+        <button id="power" class="buttonOne" onclick="displayPower()">
+            Cast Power
+        </button><br>
+        <p>Intelligence : </p>
+        <button id="intelligence" class="buttonOne" onclick="displayIntelligence()">
+            cast Intelligence
+        </button>
+    </div>
+    
+    
+    
+   
+    <h2>Evènement</h1>
+    <img id="picture" src="https://img.freepik.com/vecteurs-libre/symbole-paris-style-mignon-papier_41327-139.jpg"><br>
+    <p class="para" id="para">carte évènement</p><br>
+    
+ 
+<script>
+    //hero with initial skill
+        const perso = {
+            power : Math.round(Math.random() * 10 + 1),
+            intelligence : Math.round(Math.random() * 10 + 1)
+        };
+    
+
+    let counter = 0;
+    document.getElementById("event1").disabled = true;
+
+    function displayPower() {
+        //display power of hero
+        document.getElementById("power").innerHTML = perso.power;
+    }
+
+    function displayIntelligence() {
+        //display intelligence of hero
+        document.getElementById("intelligence").innerHTML = perso.intelligence;
+    }
+
+    function increasePower(nb) {
+        let increasePower = Math.round(Math.random() * nb);
+        console.log(increasePower);
+        perso.power = perso.power + increasePower;
+        //updating power skill of hero
+        document.getElementById("power").innerHTML = perso.power;
+        return perso.power;
+        
+       
+    }
+
+    function decreasePower(nb) {
+        let decreasePower = Math.round(Math.random() * nb);
+        console.log(decreasePower);
+        perso.power = perso.power - decreasePower;
+        //updating power skill of hero
+        document.getElementById("power").innerHTML = perso.power;
+        return perso.power;
+       
+       
+    }
+
+    
+    function increaseIntelligence(nb) {
+        let increaseIntelligence = Math.round(Math.random() * nb);
+        console.log(increaseIntelligence);
+        perso.intelligence = perso.intelligence + increaseIntelligence;
+        //updating power skill of hero
+        document.getElementById("intelligence").innerHTML = perso.intelligence;
+        return perso.intelligence;
+    }
+
+    function decreaseIntelligence(nb) {
+        let decreaseIntelligence = Math.round(Math.random() * nb);
+        console.log(decreaseIntelligence);
+        //updating your skill of hero
+        perso.intelligence = perso.intelligence - decreaseIntelligence;
+        //updating power skill of hero
+        document.getElementById("intelligence").innerHTML = perso.intelligence;
+        return perso.intelligence;
+        
+    }
+
+    function checkWinner() {
+        if(perso.power > 11 || perso.intelligence > 11) {
+            alert(`the player wins the game and his score is : ${(perso.power + perso.intelligence)}`);
+            document.getElementById("event").disabled = true;
+            document.getElementById("event1").disabled = false;
+            counter = 0;
+        }
+        if(perso.intelligence < 1 || perso.power < 1) {
+            alert(`the player lose the game in ${counter} rounds and his score is :  ${(perso.power + perso.intelligence)}`);
+            document.getElementById("event").disabled = true;
+            document.getElementById("event1").disabled = false;
+            counter = 0;
+        }
+
+        if((perso.intelligence >=1 && perso.power >=1) || (perso.intelligence <= 11 && perso.power <= 11)) {
+            return "look";
+        }
+            
+    }
+    
+        
+    function random() {
+        const picture = [0, 1, 2, 3, 4];
+        const pickEvent = picture[Math.floor(Math.random() * picture.length | 0)];
+        console.log(pickEvent);
+        if(pickEvent === 0) {
+            //display the image
+            document.getElementById("picture").src="https://i0.wp.com/mamalovesparis.com/wp-content/uploads/2019/05/mlp-copy.jpg";
+            //update the power
+            increasePower(3) + 1;
+            //describe by a displaying message the event you have just occured
+            document.getElementById("para").innerHTML = "You visited the Eiffel Tower";
+            counter++;
+        } else if(pickEvent === 1) {
+            //display the image
+                document.getElementById("picture").src="https://cdn-s-www.estrepublicain.fr/images/19465489-8A2D-47B8-BE58-B1C3FE11E0FF/NW_detail/l-exposition-quot-la-france-vue-du-grand-siecle-quot-presente-a-travers-81-oeuvres-principalement-des-dessins-l-originalite-de-l-art-du-nanceien-israel-silvestre-(1621-1691)-jusqu-au-25-juin-2018-au-musee-du-louvre-paris-le-31-mai-2018-photo-cedric-jacquot-1528031364.jpg";
+            //update the power
+            increaseIntelligence(3) + 1;
+            //describe by a displaying message the event you have just occured
+            document.getElementById("para").innerHTML = "You visited the Lelouvre Museum Tower";
+            counter++;
+        } else if(pickEvent === 2) {
+            //display the image
+                document.getElementById("picture").src="https://geo.img.pmdstatic.net/pad/http.3A.2F.2Fprd2-bone-image.2Es3-website-eu-west-1.2Eamazonaws.2Ecom.2Fgeo.2F2019.2F03.2F29.2F995f7a71-bf53-4143-9662-b9dcbec70d4d.2Ejpeg/650x365/quality/80/995f7a71-bf53-4143-9662-b9dcbec70d4d-jpeg.jpeg";
+            //update the power
+            increaseIntelligence(3) + 1;
+            //describe by a displaying message the event you have just occured
+            document.getElementById("para").innerHTML = "You visited the pyramid";
+            counter++;
+        } else if(pickEvent === 3) {
+            //display the image
+            document.getElementById("picture").src="https://a.cdn-hotels.com/gdcs/production159/d455/9193e49d-3f1f-45f4-9706-918eef226ba1.jpg";
+            //update the power
+            decreasePower(2);
+            //describe by a displaying message the event you have just occured
+            document.getElementById("para").innerHTML = "You visited the Notre Dame Church";
+            counter++;
+        } else if(pickEvent === 4) {
+            //display the image
+            document.getElementById("picture").src="https://c.ndtvimg.com/2021-09/q928ee4o_peace-generic_625x300_20_September_21.jpg";
+            //update the power
+            decreaseIntelligence(4);
+            //describe by a displaying message the event you have just occured
+            document.getElementById("para").innerHTML = "You stay here whithout doing something";
+            counter++;
+        }
+            console.log(checkWinner());
+        }
+
+        function restart() {
+            console.log("restart");
+            document.getElementById("event").disabled = false;
+            document.getElementById("event1").disabled = true;
+            perso.power = Math.round(Math.random() * 10 + 1);
+            displayPower();
+            perso.intelligence = Math.round(Math.random() * 10 + 1);
+            displayIntelligence();
+        }
+    
+  
+
+    
+
+
+</script>
+
+</body>
+
+</html>
+
+  
+        
+    
+    
+   

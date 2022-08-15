@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+ 
+<head>
+  <title>JavaScript</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <style>
+        body {
+            background-color : rgba(64, 172, 244, 0.3)
+        }
+        .sounds {
+            width : 100px;
+            height : 50px;
+            color : black;
+            text-align : center;
+            border : 1px solid black;
+            display : inline-block;
+            margin : 15px;
+            background-color : rgb(81, 163, 215);
+        }
+
+        .active {
+            border : 1px solid red;
+            color : red;
+
+        }
+
+        .sounds1 {
+            width : 100px;
+            height : 50px;
+            color : black;
+            text-align : center;
+            border : 1px solid black;
+            display : inline-block;
+            margin : 15px;
+           
+        }
+
+        
+    </style>
+    </head>
+    
+    <body>
+    <div class="container">
+        <h1 class="mr-3">Ecoutons des sons reposants pour clore ce voyage en beauté</h1>
+        <div class="row d-dlex justify-content-start">
+            <div>
+                <img class="img mr-3 mt-2" src="https://hdwallpapers.cat/thumbnail/drawing-art-tree-river-nature-789n.jpg">
+            </div>
+            <div col="md-12 mb-md-3">
+                <div class="sounds river mr-3 mt-3">River</div>
+                <div class="sounds night ml-3 mt-3">Night</div>
+                <button type="button" id="btn" class="btn btn-info mr-3">Play</button><br>
+            </div>
+            <div>
+                <img class="img mt-2" src="https://hdwallpapers.cat/thumbnail/drawing-art-tree-river-nature-789n.jpg">  
+            </div>
+        </div>
+    </div>
+   
+    <script>
+       
+    const btn = document.querySelector("#btn");
+    const river = new Audio("night.png.mp3");
+  
+
+    btn.addEventListener("click", function() {
+        let duration = river.duration;
+        let muted = river.muted;
+        river.play();
+        console.log(muted);
+        console.log(duration);
+        console.log(river);
+    })
+
+    const sounds = document.querySelectorAll(".sounds");
+    console.log(sounds);
+    for(let i = 0; i < sounds.length; i++) {
+        sounds[i].addEventListener("click", function() {
+            let sound = this.innerHTML;
+            console.log(sound);
+            let lowerSound = sound.toLowerCase();
+            console.log(lowerSound);
+            makeSound(lowerSound);
+            addStyle(lowerSound);
+        })
+    }
+
+    function addStyle(name) {
+        console.log(name);
+        let activeElement = document.querySelector(`.${name}`);
+        console.log(activeElement);
+        activeElement.classList.add("active");
+        setTimeout(function() {
+            activeElement.classList.remove("active");
+        }, 1000);
+    }
+
+    function makeSound(name) {
+        console.log(name);
+        
+        switch(name) {
+            case "river" : 
+            let sound1 = new Audio("river.png.mp3");
+            sound1.play();
+            break;
+            case "night" :
+            let sound2 = new Audio("night.png.mp3");
+            sound2.play();
+            break;
+        }
+    } 
+    </script>
+    </body>
+    
+    </html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <title>BS4</title>
+        <!--MDB-->
+        <!-- Font Awesome -->
+       
+        
+       
+        <title>Bootstrap Example</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+        
+        <style>
+            body {
+                background-color : rgb(219, 215, 215);
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="myDiagramDiv2" style="background-color: rgb(152, 151, 151); border: solid 1px black; width: 100%; height: 500px">
+
+        </div>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/gojs/2.1.34/go.js"></script>
+        <script>
+            
+                //project1
+                function draw2() {
+                    var $ = go.GraphObject.make;  // for conciseness in defining templates
+                    myDiagram =
+                        $(go.Diagram, "myDiagramDiv2",
+                            {
+                                allowCopy: false,
+                                "draggingTool.dragsTree": true,
+                                "commandHandler.deletesTree": true,
+                                layout:
+                                $(go.TreeLayout,
+                                    { angle: 90, arrangement: go.TreeLayout.ArrangementFixedRoots }),
+                                "undoManager.isEnabled": true
+                            });
+
+                    // when the document is modified, add a "*" to the title and enable the "Save" button
+                    myDiagram.addDiagramListener("Modified", function(e) {
+                        var button = document.getElementById("SaveButton");
+                        if (button) button.disabled = !myDiagram.isModified;
+                        var idx = document.title.indexOf("*");
+                        if (myDiagram.isModified) {
+                        if (idx < 0) document.title += "*";
+                        } else {
+                        if (idx >= 0) document.title = document.title.substr(0, idx);
+                        }
+                    });
+
+                    var bluegrad = $(go.Brush, "Linear", { 0: "lightblue", 1: "teal" });
+                    var greengrad = $(go.Brush, "Linear", { 0: "orange", 1: "tomato" });
+
+                    // each action is represented by a shape and some text
+                    var actionTemplate =
+                        $(go.Panel, "Horizontal",
+                        $(go.Shape,
+                            { width: 12, height: 12 },
+                            new go.Binding("figure"),
+                            new go.Binding("fill")
+                        ),
+                        $(go.TextBlock,
+                            { font: "10pt Verdana, sans-serif" },
+                            new go.Binding("text")
+                        )
+                        );
+
+                    // each regular Node has body consisting of a title followed by a collapsible list of actions,
+                    // controlled by a PanelExpanderButton, with a TreeExpanderButton underneath the body
+                    myDiagram.nodeTemplate =  // the default node template
+                        $(go.Node, "Vertical",
+                        new go.Binding("isTreeExpanded").makeTwoWay(),  // remember the expansion state for
+                        new go.Binding("wasTreeExpanded").makeTwoWay(), //   when the model is re-loaded
+                        { selectionObjectName: "BODY" },
+                        // the main "BODY" consists of a RoundedRectangle surrounding nested Panels
+                        $(go.Panel, "Auto",
+                            { name: "BODY" },
+                            $(go.Shape, "Rectangle",
+                            { fill: bluegrad, stroke: null }
+                            ),
+                            $(go.Panel, "Vertical",
+                            { margin: 3 },
+                            // the title
+                            $(go.TextBlock,
+                                {
+                                stretch: go.GraphObject.Horizontal,
+                                font: "bold 12pt Verdana, sans-serif"
+                                },
+                                new go.Binding("text", "question")
+                            ),
+                            // the optional list of actions
+                            $(go.Panel, "Vertical",
+                                { stretch: go.GraphObject.Horizontal, visible: false },  // not visible unless there is more than one action
+                                new go.Binding("visible", "actions", function(acts) {
+                                return (Array.isArray(acts) && acts.length > 0);
+                                }),
+                                // headered by a label and a PanelExpanderButton inside a Table
+                                $(go.Panel, "Table",
+                                { stretch: go.GraphObject.Horizontal },
+                                $(go.TextBlock, "Description",
+                                    {
+                                    alignment: go.Spot.Left,
+                                    font: "10pt Verdana, sans-serif"
+                                    }
+                                ),
+                                $("PanelExpanderButton", "COLLAPSIBLE",  // name of the object to make visible or invisible
+                                    { column: 1, alignment: go.Spot.Right }
+                                )
+                                ), // end Table panel
+                                // with the list data bound in the Vertical Panel
+                                $(go.Panel, "Vertical",
+                                {
+                                    name: "COLLAPSIBLE",  // identify to the PanelExpanderButton
+                                    padding: 2,
+                                    stretch: go.GraphObject.Horizontal,  // take up whole available width
+                                    background: "white",  // to distinguish from the node's body
+                                    defaultAlignment: go.Spot.Left,  // thus no need to specify alignment on each element
+                                    itemTemplate: actionTemplate  // the Panel created for each item in Panel.itemArray
+                                },
+                                new go.Binding("itemArray", "actions")  // bind Panel.itemArray to nodedata.actions
+                                )  // end action list Vertical Panel
+                            )  // end optional Vertical Panel
+                            )  // end outer Vertical Panel
+                        ),  // end "BODY"  Auto Panel
+                        $(go.Panel,  // this is underneath the "BODY"
+                            { height: 17 },  // always this height, even if the TreeExpanderButton is not visible
+                            $("TreeExpanderButton")
+                        )
+                        );
+
+                    // define a second kind of Node:
+                    myDiagram.nodeTemplateMap.add("Terminal",
+                        $(go.Node, "Spot",
+                        $(go.Shape, "Ellipse",
+                            { height : 50, width : 400, fill: greengrad, stroke: null }
+                        ),
+                        $(go.TextBlock,
+                            { font: "10pt Verdana, sans-serif" },
+                            new go.Binding("text")
+                        )
+                        )
+                    );
+
+                    myDiagram.linkTemplate =
+                        $(go.Link, go.Link.Orthogonal,
+                        { deletable: false, corner: 10 },
+                        $(go.Shape,
+                            { strokeWidth: 2 }
+                        ),
+                        $(go.TextBlock, go.Link.OrientUpright,
+                            {
+                            background: "white",
+                            visible: false,  // unless the binding sets it to true for a non-empty string
+                            segmentIndex: -2,
+                            segmentOrientation: go.Link.None
+                            },
+                            new go.Binding("text", "answer"),
+                            // hide empty string;
+                            // if the "answer" property is undefined, visible is false due to above default setting
+                            new go.Binding("visible", "answer", function(a) { return (a ? true : false); })
+                        )
+                        );
+                    
+                    var nodeDataArray = [
+                        {
+                            key: 1, 
+                                question: "Nous allons étudier des monuments importants  à paris",
+                                actions : [
+                                    { text: "* la tour Eiffel", figure: "Ellipse", fill: "salmon" },
+                                    { text: "* Notre Dame de Paris actuellemnt restaurée à la suite d'un incendie", figure : "Ellipse", fill : "salmon" },
+                                    { text: "* La pyramide construite récemment", figure : "Ellipse", fill : "salmon" },
+                                    { text: "* Et le Louvre qui regorge de somptueuses peintures", figure : "Ellipse", fill : "salmon" }
+                                ]
+                        },
+                        {
+                            key: 2,
+                            question: "Alors apprenons de choses passionnantes sur ces 4 monuments : ",
+                            actions: [
+                               
+                            ]
+                        },
+                        {
+                            key: 3, 
+                            question: "La tour Eiffel",
+                            actions : [
+                                    { text:"Elle mesure 330 mètres de hauteur. ", figure: "Ellipse", fill: "salmon" },
+                                    { text: "Sa construction a débutée en 1887", figure : "Ellipse", fill : "salmon" },
+                                    { text: "et s'est achevée en 1889.", figure : "Ellipse", fill : "salmon" },
+                                    { text:"Plus de 5 millions de visiteurs viennent la voir chaque année.", figure: "Ellipse", fill: "salmon" },
+                            ]         
+                        },
+                        { 
+                            key: 4,
+                            question: "Notre Dame de Paris :",
+                            actions : [
+                                { text:"Elle mesure 96 mètres de hauteur en prenant compte sa flèche. ", figure: "Ellipse", fill: "salmon" },
+                                { text: "Sa construction a débutée en 1163", figure : "Ellipse", fill : "salmon" },
+                                { text: "et s'est achevée en 1350.", figure : "Ellipse", fill : "salmon" },
+                                { text:"Plus de 13 millions de visiteurs viennent la voir chaque année.", figure: "Ellipse", fill: "salmon" },
+                               
+                            ]   
+                        },
+                        { 
+                            key: 5,
+                            question: "La pyramide du Louvre",
+                            actions : [
+                                    { text:"Elle mesure 21 mètres de hauteur. ", figure: "Ellipse", fill: "salmon" },
+                                    { text: "Sa construction a débutée en 1983.", figure : "Ellipse", fill : "salmon" },
+                                    { text: "et s'est achevée en 1988", figure : "Ellipse", fill : "salmon" },
+                                    { text:"Plus de 5 millions de visiteurs viennent la voir chaque année.", figure: "Ellipse", fill: "salmon" }
+                            ]   
+                        },
+                        { 
+                            key: 6,
+                            question: "et enfin le musée du Louvre",
+                            actions : [
+                                { text:"Il mesure 40 mètres de hauteur. ", figure: "Ellipse", fill: "salmon" },
+                                { text: "Sa construction a débutée en 1775", figure : "Ellipse", fill : "salmon" },
+                                { text: "et s'est achevée en 1793. :", figure : "Ellipse", fill : "salmon" },
+                                { text:"Plus de 10 millions de visiteurs viennent la voir chaque année.", figure: "Ellipse", fill: "salmon" }
+                               
+                            ]   
+                        },
+
+                    ]
+
+                       
+                    var linkDataArray = [
+                        { from: 1, to: 2  },
+                        { from: 2, to: 3 },
+                        { from: 2, to: 4 },
+                        { from : 2, to : 5 },
+                        { from : 2, to : 6 },
+                    ];
+
+                    // create the Model with the above data, and assign to the Diagram
+                    myDiagram.model = $(go.GraphLinksModel,
+                        {
+                            copiesArrays: true,
+                            copiesArrayObjects: true,
+                            nodeDataArray: nodeDataArray,
+                            linkDataArray: linkDataArray
+                        }
+                    );
+                }
+
+                draw2();
+               
+              
+              
+                
+
+  
+
+    
+        </script>
+
+    </body>
+</html>
